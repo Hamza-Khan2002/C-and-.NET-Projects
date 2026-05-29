@@ -1,0 +1,25 @@
+# Solution-wide ignores
+/.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.dotCover
+.vscode/
+.idea/
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Secrets
+secrets.json
+
+# Database
+*.db
+*.sqlite
+
+# Publish
+publish/
