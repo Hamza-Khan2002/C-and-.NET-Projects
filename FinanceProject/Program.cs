@@ -1,4 +1,5 @@
 using FinanceProject.Data;
+using FinanceProject.DTO.Comment;
 using FinanceProject.DTO.Stock;
 using FinanceProject.Interfaces;
 using FinanceProject.Mapper;
@@ -21,9 +22,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 //Configure Repository using Dependency Injection
 builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 //Configure Mapping
-builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StockDto)));
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StockDto), typeof(CommentDto)));
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
