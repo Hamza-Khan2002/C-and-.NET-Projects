@@ -15,13 +15,17 @@ namespace FinanceProject.Repositories
 
         public async Task<List<StockDto>> GetStocksAsync()
         {
-            var stock = await _context.Stocks.ToListAsync();
+            var stock = await _context.Stocks
+                .Include(c => c.Comments)
+                .ToListAsync();
             return _mapper.Map<List<StockDto>>(stock);
         }
 
         public async Task<StockDto> GetStockByIdAsync(int id)
         {
-            var stock = await _context.Stocks.FindAsync(id);
+            var stock = await _context.Stocks
+                .Include(c => c.Comments)
+                .FirstOrDefaultAsync(s => s.Id == id);
             return stock == null ? throw new KeyNotFoundException("Stock not found") : _mapper.Map<StockDto>(stock);
         }
 

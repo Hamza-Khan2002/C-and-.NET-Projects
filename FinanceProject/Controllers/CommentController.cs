@@ -1,4 +1,5 @@
-﻿using FinanceProject.Interfaces;
+﻿using FinanceProject.DTO.Comment;
+using FinanceProject.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace FinanceProject.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [ActionName(nameof(GetCommentByIdAsync))]
         public async Task<IActionResult> GetCommentByIdAsync([FromRoute] int id)
         {
             try
@@ -24,6 +26,34 @@ namespace FinanceProject.Controllers
                 return Ok(await _commentRepo.GetCommentByIdAsync(id));
             }
             catch(KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{stockId:int}")]
+        public async Task<IActionResult> CreateCommentAsync([FromRoute] int stockId, [FromBody] CreateCommentDto data)
+        {
+            try
+            {
+                var comment = await _commentRepo.CreateCommentAsync(stockId, data);
+                return CreatedAtAction("GetCommentByIdAsync", new { id = comment.Id }, comment);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteCommentAsync([FromRoute] int id)
+        {
+            try
+            {
+                await _commentRepo.DeleteCommentAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }

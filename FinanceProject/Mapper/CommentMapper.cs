@@ -8,9 +8,8 @@ namespace FinanceProject.Mapper
     {
         public CommentMapper()
         {
-            CreateMap<Comment, CommentDto>()
-                .ForMember(sm => sm.StockName, options => 
-                options.MapFrom(src => src.Stock != null ? src.Stock.CompanyName : null));
+            CreateMap<Comment, CommentDto>();
+            CreateMap<CreateCommentDto, Comment>();
         }
     }
 }
