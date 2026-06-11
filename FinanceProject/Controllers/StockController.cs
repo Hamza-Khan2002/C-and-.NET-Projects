@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FinanceProject.Data;
 using FinanceProject.DTO.Stock;
+using FinanceProject.Helper;
 using FinanceProject.Interfaces;
 using FinanceProject.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,9 +17,16 @@ namespace FinanceProject.Controllers
         private readonly IStockRepository _repository = repository;
 
         [HttpGet]
-        public async Task<IActionResult> GetStocksAsync()
+        public async Task<IActionResult> GetStocksAsync([FromQuery]QueryObject query)
         {
-            return Ok(await _repository.GetStocksAsync());
+            try
+            {
+                return Ok(await _repository.GetStocksAsync(query));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{id:int}")]
@@ -38,6 +46,8 @@ namespace FinanceProject.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateStockAsync([FromBody] CreateStockDto data)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var stock = await _repository.CreateStockAsync(data);
             return CreatedAtAction("GetStockById", new { id = stock.Id }, stock);
         }
@@ -45,6 +55,8 @@ namespace FinanceProject.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateStockAsync([FromRoute] int id, [FromBody] UpdateStockDto data)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             try
             {
                 return Ok(await _repository.UpdateStockAsync(id, data));

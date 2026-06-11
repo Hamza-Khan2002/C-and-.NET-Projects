@@ -1,10 +1,11 @@
 ﻿using FinanceProject.DTO.Stock;
+using FinanceProject.Helper;
 
 namespace FinanceProject.Interfaces
 {
     public interface IStockRepository
     {
-        Task<List<StockDto>> GetStocksAsync();
+        Task<List<StockDto>> GetStocksAsync(QueryObject query);
         Task<StockDto> GetStockByIdAsync(int id);
         Task<StockDto> CreateStockAsync(CreateStockDto data);
         Task<StockDto> UpdateStockAsync(int id, UpdateStockDto data);

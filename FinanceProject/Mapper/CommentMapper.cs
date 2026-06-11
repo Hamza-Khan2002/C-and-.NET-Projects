@@ -10,6 +10,7 @@ namespace FinanceProject.Mapper
         {
             CreateMap<Comment, CommentDto>();
             CreateMap<CreateCommentDto, Comment>();
+            CreateMap<UpdateCommentDto, Comment>();
         }
     }
 }

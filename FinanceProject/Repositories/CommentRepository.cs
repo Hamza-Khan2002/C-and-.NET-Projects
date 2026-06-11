@@ -40,6 +40,17 @@ namespace FinanceProject.Repositories
             await _context.SaveChangesAsync();
             return _mapper.Map<CommentDto>(comment);
         }
+
+        public async Task<CommentDto> UpdateCommentAsync(int id, UpdateCommentDto data)
+        {
+            var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+            if (comment == null) throw new KeyNotFoundException("Comment not found");
+            
+            _mapper.Map(data, comment);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<CommentDto>(comment);
+        }
+
         public async Task DeleteCommentAsync(int id)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);

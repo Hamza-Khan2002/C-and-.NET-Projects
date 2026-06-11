@@ -2,7 +2,7 @@
 
 namespace FinanceProject.DTO.Comment
 {
-    public class CreateCommentDto
+    public class UpdateCommentDto
     {
         [Required]
         [MaxLength(20, ErrorMessage = "Title cannot exceed 20 characters.")]

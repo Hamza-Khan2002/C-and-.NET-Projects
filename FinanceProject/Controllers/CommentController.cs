@@ -34,10 +34,27 @@ namespace FinanceProject.Controllers
         [HttpPost("{stockId:int}")]
         public async Task<IActionResult> CreateCommentAsync([FromRoute] int stockId, [FromBody] CreateCommentDto data)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             try
             {
                 var comment = await _commentRepo.CreateCommentAsync(stockId, data);
                 return CreatedAtAction("GetCommentByIdAsync", new { id = comment.Id }, comment);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateCommentAsync([FromRoute] int id, [FromBody] UpdateCommentDto data)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var comment = await _commentRepo.UpdateCommentAsync(id, data);
+                return Ok(comment);
             }
             catch (KeyNotFoundException ex)
             {
