@@ -4,6 +4,7 @@ using FinanceProject.DTO.Stock;
 using FinanceProject.Helper;
 using FinanceProject.Interfaces;
 using FinanceProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace FinanceProject.Controllers
 {
     [Route("api/stock")]
     [ApiController]
+    [Authorize]
     public class StockController(IStockRepository repository) : ControllerBase
     {
         private readonly IStockRepository _repository = repository;

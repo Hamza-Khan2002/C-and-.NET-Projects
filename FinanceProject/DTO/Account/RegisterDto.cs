@@ -4,7 +4,6 @@ namespace FinanceProject.DTO.Account
 {
     public class RegisterDto
     {
-        public int Id { get; set; }
         [Required]
         [MaxLength(15, ErrorMessage = "User Name cannot exceed 15 characters.")]
         public string UserName { get; set; } = string.Empty;

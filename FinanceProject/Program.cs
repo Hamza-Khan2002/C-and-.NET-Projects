@@ -5,6 +5,7 @@ using FinanceProject.Interfaces;
 using FinanceProject.Mapper;
 using FinanceProject.Models;
 using FinanceProject.Repositories;
+using FinanceProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //Configure Repository using Dependency Injection
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 //Configure Mapping
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StockDto), typeof(CommentDto)));
