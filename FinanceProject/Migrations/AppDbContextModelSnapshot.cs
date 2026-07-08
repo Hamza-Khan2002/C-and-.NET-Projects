@@ -116,6 +116,21 @@ namespace FinanceProject.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("FinanceProject.Models.Portfolio", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId", "StockId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("Portfolio");
+                });
+
             modelBuilder.Entity("FinanceProject.Models.Stock", b =>
                 {
                     b.Property<int>("Id")
@@ -308,6 +323,25 @@ namespace FinanceProject.Migrations
                     b.Navigation("Stock");
                 });
 
+            modelBuilder.Entity("FinanceProject.Models.Portfolio", b =>
+                {
+                    b.HasOne("FinanceProject.Models.AppUser", "AppUser")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FinanceProject.Models.Stock", "Stock")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Stock");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -359,9 +393,16 @@ namespace FinanceProject.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FinanceProject.Models.AppUser", b =>
+                {
+                    b.Navigation("Portfolios");
+                });
+
             modelBuilder.Entity("FinanceProject.Models.Stock", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }

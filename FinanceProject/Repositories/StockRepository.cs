@@ -20,8 +20,11 @@ namespace FinanceProject.Repositories
                 .Include(c => c.Comments)
                 .AsQueryable();
 
+            //Filtering
             if(!string.IsNullOrWhiteSpace(query.Symbol)) stock = stock.Where(s => s.Symbol.Contains(query.Symbol));
             if(!string.IsNullOrWhiteSpace(query.CompanyName)) stock = stock.Where(s => s.CompanyName.Contains(query.CompanyName));
+
+            //Sorting
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
                 stock = query.SortBy.ToLower() switch
@@ -33,6 +36,8 @@ namespace FinanceProject.Repositories
                     _ => stock.OrderBy(s => s.Purchase)
                 };
             }
+
+            //Pagination
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
  
             return _mapper.Map<List<StockDto>>(await stock.Skip(skipNumber).Take(query.PageSize).ToListAsync());
@@ -43,6 +48,14 @@ namespace FinanceProject.Repositories
             var stock = await _context.Stocks
                 .Include(c => c.Comments)
                 .FirstOrDefaultAsync(s => s.Id == id);
+            return stock == null ? throw new KeyNotFoundException("Stock not found") : _mapper.Map<StockDto>(stock);
+        }
+        
+        public async Task<StockDto> GetStockByCompanyNameAsync(string companyName)
+        {
+            var stock = await _context.Stocks
+                .Include(c => c.Comments)
+                .FirstOrDefaultAsync(cn => cn.CompanyName == companyName);
             return stock == null ? throw new KeyNotFoundException("Stock not found") : _mapper.Map<StockDto>(stock);
         }
 
