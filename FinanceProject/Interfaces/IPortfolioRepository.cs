@@ -7,5 +7,7 @@ namespace FinanceProject.Interfaces
     {
         Task<List<StockDto>> GetUserPortfolio(AppUser user);
         Task<Portfolio> AddStockToPortfolio(Portfolio portfolio);
+
+        Task DeletePortfolio(AppUser user, string companyName);
     }
 }

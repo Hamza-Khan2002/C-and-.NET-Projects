@@ -18,6 +18,7 @@ namespace FinanceProject.Repositories
         {
             var stock = _context.Stocks
                 .Include(c => c.Comments)
+                .ThenInclude(i => i.AppUser)
                 .AsQueryable();
 
             //Filtering

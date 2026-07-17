@@ -1,6 +1,9 @@
 ﻿using FinanceProject.DTO.Comment;
+using FinanceProject.Extensions;
 using FinanceProject.Interfaces;
+using FinanceProject.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceProject.Controllers
@@ -38,7 +41,9 @@ namespace FinanceProject.Controllers
 
             try
             {
-                var comment = await _commentRepo.CreateCommentAsync(stockId, data);
+                var username = User.GetUsername();
+                var comment = await _commentRepo.CreateCommentAsync(stockId, data, username);
+                
                 return CreatedAtAction("GetCommentByIdAsync", new { id = comment.Id }, comment);
             }
             catch (KeyNotFoundException ex)

@@ -34,5 +34,17 @@ namespace FinanceProject.Repositories
             await _context.SaveChangesAsync();
             return portfolio;
         }
+
+        public async Task DeletePortfolio(AppUser user, string companyName)
+        {
+            var portfolio = await _context.Portfolios.FirstOrDefaultAsync(p => p.AppUserId == user.Id 
+                            && p.Stock!.CompanyName.ToLower() == companyName.ToLower());
+            
+            if(portfolio != null)
+            {
+                _context.Remove(portfolio);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

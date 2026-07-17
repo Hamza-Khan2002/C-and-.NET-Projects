@@ -45,5 +45,24 @@ namespace FinanceProject.Controllers
             var addedPortfolio = await _portfolioRepo.AddStockToPortfolio(portfolioModel);
             return addedPortfolio != null ? Created() : BadRequest("Failed to add stock to portfolio");
         }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeletePortfolio(string companyName)
+        {
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+            var portfolio = await _portfolioRepo.GetUserPortfolio(appUser!);
+
+            var filteredPortfolio = portfolio.Where(p => p.CompanyName.ToLower() == companyName.ToLower());
+
+            if(filteredPortfolio.Count() == 1)
+            {
+                await _portfolioRepo.DeletePortfolio(appUser!, companyName);
+            }
+            else return BadRequest("Stock not found in portfolio");
+
+            return Ok();
+        }
     }
 }

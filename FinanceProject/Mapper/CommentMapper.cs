@@ -8,7 +8,9 @@ namespace FinanceProject.Mapper
     {
         public CommentMapper()
         {
-            CreateMap<Comment, CommentDto>();
+            CreateMap<Comment, CommentDto>()
+                .ForMember(ap => ap.CreatedBy,
+                opt => opt.MapFrom(src => src.AppUser!.UserName));
             CreateMap<CreateCommentDto, Comment>();
             CreateMap<UpdateCommentDto, Comment>();
         }
