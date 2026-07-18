@@ -481,9 +481,8 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
+#Database Secrets and Security Key
 appsettings.json
-appsettings.*.json
+appsettings.Example.json
 
-Properties
 
-.FinanceProject.slnx

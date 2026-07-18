@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using FinanceProject.Data;
+using FinanceProject.DTO.Comment;
 using FinanceProject.DTO.Stock;
 using FinanceProject.Interfaces;
 using FinanceProject.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace FinanceProject.Repositories
 {
@@ -24,7 +26,16 @@ namespace FinanceProject.Repositories
                     Purchase = stock.Stock.Purchase,
                     LastDiv = stock.Stock.LastDiv,
                     Industry = stock.Stock.Industry,
-                    MarketCap = stock.Stock.MarketCap
+                    MarketCap = stock.Stock.MarketCap,
+                    Comments = stock.Stock.Comments
+                        .Select(c => new CommentDto
+                        {
+                            Id = c.Id,
+                            Title = c.Title,
+                            Content = c.Content,
+                            CreatedOn = c.CreatedOn,
+                            CreatedBy = c.AppUser!.UserName!
+                        }).ToList()
                 }).ToListAsync();
         }
 
