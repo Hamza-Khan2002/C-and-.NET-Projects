@@ -12,5 +12,7 @@ namespace FinanceProject.Mapper
             CreateMap<CreateStockDto, Stock>();
             CreateMap<UpdateStockDto, Stock>();
         }
+
+
     }
 }

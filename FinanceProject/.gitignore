@@ -483,6 +483,5 @@ $RECYCLE.BIN/
 
 #Database Secrets and Security Key
 appsettings.json
-appsettings.Example.json
 
 

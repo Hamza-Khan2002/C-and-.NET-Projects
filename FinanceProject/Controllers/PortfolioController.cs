@@ -25,25 +25,23 @@ namespace FinanceProject.Controllers
             return Ok(await _portfolioRepo.GetUserPortfolio(appUser!));
         }
 
-        [HttpPost]
+        [HttpPost("{symbol:alpha}")]
         [Authorize]
-        public async Task<IActionResult> AddStockToPortfolio(string companyName)
+        public async Task<IActionResult> AddStockToPortfolio([FromRoute]string symbol)
         {
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
-            var stock = await _stockRepo.GetStockByCompanyNameAsync(companyName);
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
-            var userPortfolio = await _portfolioRepo.GetUserPortfolio(appUser!);
-            if (userPortfolio.Any(cn => cn.CompanyName == companyName)) return BadRequest("Same Stock can not be added");
-
-            var portfolioModel = new Portfolio
+            try
             {
-                AppUserId = appUser!.Id,
-                StockId = stock.Id
-            };
+                var username = User.GetUsername();
 
-            var addedPortfolio = await _portfolioRepo.AddStockToPortfolio(portfolioModel);
-            return addedPortfolio != null ? Created() : BadRequest("Failed to add stock to portfolio");
+                var addedPortfolio = await _portfolioRepo.AddStockToPortfolio(username, symbol);
+                return addedPortfolio != null ? Created() : BadRequest("Failed to add stock to portfolio");
+            }
+            catch(InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete]

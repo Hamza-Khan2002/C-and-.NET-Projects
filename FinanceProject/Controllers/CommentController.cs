@@ -1,5 +1,6 @@
 ﻿using FinanceProject.DTO.Comment;
 using FinanceProject.Extensions;
+using FinanceProject.Helper;
 using FinanceProject.Interfaces;
 using FinanceProject.Models;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +16,9 @@ namespace FinanceProject.Controllers
         private readonly ICommentRepository _commentRepo = commentRepo;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCommentAsync()
+        public async Task<IActionResult> GetAllCommentAsync([FromQuery] CommentQueryObject queryObject)
         {
-            return Ok(await _commentRepo.GetAllCommentAsync());
+            return Ok(await _commentRepo.GetAllCommentAsync(queryObject));
         }
 
         [HttpGet("{id:int}")]
@@ -34,15 +35,15 @@ namespace FinanceProject.Controllers
             }
         }
 
-        [HttpPost("{stockId:int}")]
-        public async Task<IActionResult> CreateCommentAsync([FromRoute] int stockId, [FromBody] CreateCommentDto data)
+        [HttpPost("{symbol:alpha}")]
+        public async Task<IActionResult> CreateCommentAsync([FromRoute] string symbol, [FromBody] CreateCommentDto data)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
                 var username = User.GetUsername();
-                var comment = await _commentRepo.CreateCommentAsync(stockId, data, username);
+                var comment = await _commentRepo.CreateCommentAsync(symbol, data, username);
                 
                 return CreatedAtAction("GetCommentByIdAsync", new { id = comment.Id }, comment);
             }

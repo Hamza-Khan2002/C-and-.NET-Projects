@@ -4,15 +4,18 @@ using FinanceProject.DTO.Comment;
 using FinanceProject.DTO.Stock;
 using FinanceProject.Interfaces;
 using FinanceProject.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace FinanceProject.Repositories
 {
-    public class PortfolioRepository(AppDbContext context, IMapper mapper) : IPortfolioRepository
+    public class PortfolioRepository(AppDbContext context, IMapper mapper, UserManager<AppUser> userManager, IFMPService fmpService) : IPortfolioRepository
     {
         private readonly AppDbContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly IFMPService _fmpService = fmpService;
 
         public async Task<List<StockDto>> GetUserPortfolio(AppUser user)
         {
@@ -39,11 +42,31 @@ namespace FinanceProject.Repositories
                 }).ToListAsync();
         }
 
-        public async Task<Portfolio> AddStockToPortfolio(Portfolio portfolio)
+        public async Task<Portfolio> AddStockToPortfolio(string username, string symbol)
         {
-            await _context.Portfolios.AddAsync(portfolio);
+            var appUser = await _userManager.FindByNameAsync(username);
+            var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.Symbol == symbol);
+
+            if(stock == null)
+            {
+                stock = await _fmpService.GetStockBySymbolAsync(symbol);
+                if(stock == null) throw new InvalidOperationException("Stock not found");
+
+                await _context.Stocks.AddAsync(stock);
+                await _context.SaveChangesAsync();
+            }
+
+            var userPortfolio = await GetUserPortfolio(appUser!);
+            if (userPortfolio.Any(cn => cn.Symbol == symbol)) throw new InvalidOperationException("Stock already in portfolio");
+
+            var portfolioModel = new Portfolio
+            {
+                AppUserId = appUser!.Id,
+                StockId = stock!.Id
+            };
+            await _context.Portfolios.AddAsync(portfolioModel);
             await _context.SaveChangesAsync();
-            return portfolio;
+            return portfolioModel;
         }
 
         public async Task DeletePortfolio(AppUser user, string companyName)

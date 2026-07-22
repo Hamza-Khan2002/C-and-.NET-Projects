@@ -43,7 +43,8 @@ builder.Services.AddSwaggerGen(option =>
 //Configure Databse
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptionsAction : sqlOption => sqlOption.EnableRetryOnFailure());
 });
 
 //Configure Repository using Dependency Injection
@@ -51,6 +52,8 @@ builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+builder.Services.AddScoped<IFMPService, FMPService>();
+builder.Services.AddHttpClient<IFMPService, FMPService>();
 
 //Configure Mapping
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StockDto), typeof(CommentDto)));
