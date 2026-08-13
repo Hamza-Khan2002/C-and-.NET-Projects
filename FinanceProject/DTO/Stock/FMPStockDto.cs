@@ -6,8 +6,8 @@
         public double price { get; set; }
         public double beta { get; set; }
         public int volAvg { get; set; }
-        public long mktCap { get; set; }
-        public double lastDiv { get; set; }
+        public long marketCap { get; set; }
+        public double lastDividend { get; set; }
         public string range { get; set; } = string.Empty;
         public double changes { get; set; }
         public string companyName { get; set; } = string.Empty;

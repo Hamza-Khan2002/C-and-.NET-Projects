@@ -84,4 +84,4 @@ Thumbs.db
 ## JetBrains
 *.iml
 
-# Ensure EF migrations and code are tracked (do not ignore Migrations folder by default)
+appsettings.json

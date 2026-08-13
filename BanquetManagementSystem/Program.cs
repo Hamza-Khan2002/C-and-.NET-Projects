@@ -1,6 +1,10 @@
 using BanquetManagementSystem.Data;
 using BanquetManagementSystem.DTOs;
+using BanquetManagementSystem.Interface;
+using BanquetManagementSystem.Interface.User;
 using BanquetManagementSystem.Models;
+using BanquetManagementSystem.Repository;
+using BanquetManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
@@ -39,8 +43,11 @@ builder.Services.AddSwaggerGen(option =>
 //Configure Mapping
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(BanquetBookingDto)));
 
-// Add services to the container.
+//Configure Dependency Injection
+builder.Services.AddScoped<IBanquetBookingRepository, BanquetBookingRepository>();
+builder.Services.AddScoped<IReferenceIDService, ReferenceIDService>();
 
+// Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

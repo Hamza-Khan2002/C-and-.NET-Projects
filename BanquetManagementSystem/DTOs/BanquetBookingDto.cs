@@ -20,6 +20,7 @@ namespace BanquetManagementSystem.DTOs
         public TimeSlot TimeSlot { get; set; }
         [Required, Range(1, 500)]
         public int GuestCount { get; set; }
+        public BookingStatus Status { get; set; } = BookingStatus.Pending;
         [MaxLength(500)]
         public string? SpecialNote { get; set; } = string.Empty;
         public string PackageName { get; set; } = string.Empty;

@@ -9,10 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceProject.Repositories
 {
-    public class StockRepository(AppDbContext context, IMapper mapper):IStockRepository
+    public class StockRepository(AppDbContext context, IMapper mapper, IFMPService fmpService):IStockRepository
     {
         private readonly AppDbContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly IFMPService _fmpService = fmpService;
 
         public async Task<List<StockDto>> GetStocksAsync(QueryObject query)
         {
@@ -22,8 +23,8 @@ namespace FinanceProject.Repositories
                 .AsQueryable();
 
             //Filtering
-            if(!string.IsNullOrWhiteSpace(query.Symbol)) stock = stock.Where(s => s.Symbol.Contains(query.Symbol));
-            if(!string.IsNullOrWhiteSpace(query.CompanyName)) stock = stock.Where(s => s.CompanyName.Contains(query.CompanyName));
+            if (!string.IsNullOrWhiteSpace(query.Symbol)) stock = stock.Where(s => s.Symbol.Contains(query.Symbol));
+            if (!string.IsNullOrWhiteSpace(query.CompanyName)) stock = stock.Where(s => s.CompanyName.Contains(query.CompanyName));
 
             //Sorting
             if (!string.IsNullOrWhiteSpace(query.SortBy))
@@ -40,14 +41,31 @@ namespace FinanceProject.Repositories
 
             //Pagination
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
- 
-            return _mapper.Map<List<StockDto>>(await stock.Skip(skipNumber).Take(query.PageSize).ToListAsync());
+
+            var localResult =  await stock.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+
+            if(localResult.Count == 0 && query.PageNumber == 1)
+            {
+                Stock? fetched = null;
+                if(!string.IsNullOrWhiteSpace(query.Symbol)) fetched = await _fmpService.GetStockBySymbolAsync(query.Symbol);
+                else if (!string.IsNullOrWhiteSpace(query.CompanyName)) fetched = await _fmpService.GetStockByCompanyNameAsync(query.CompanyName);
+
+                if(fetched != null)
+                {
+                    await _context.Stocks.AddAsync(fetched);
+                    await _context.SaveChangesAsync();
+                    localResult = [fetched];
+                }
+            }
+            return _mapper.Map<List<StockDto>>(localResult);
         }
+        
 
         public async Task<StockDto> GetStockByIdAsync(int id)
         {
             var stock = await _context.Stocks
                 .Include(c => c.Comments)
+                .ThenInclude(i => i.AppUser)
                 .FirstOrDefaultAsync(s => s.Id == id);
             return stock == null ? throw new KeyNotFoundException("Stock not found") : _mapper.Map<StockDto>(stock);
         }
