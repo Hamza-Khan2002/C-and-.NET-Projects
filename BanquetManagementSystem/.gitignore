@@ -1,0 +1,87 @@
+# Visual Studio / .NET Core gitignore
+# Generated for an ASP.NET Core (.NET 10) Visual Studio project
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+/bin/
+/obj/
+**/bin/
+**/obj/
+
+## Publish output
+/publish/
+**/publish/
+
+## NuGet
+*.nupkg
+# The packages folder can be ignored because of PackageReference
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Rider
+.idea/
+
+## Visual Studio Code
+.vscode/
+
+## ASP.NET Core
+wwwroot/lib/
+node_modules/
+bower_components/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+
+## Resharper
+_ReSharper*/
+*.ReSharper*/
+*.DotSettings.user
+
+## Test results
+TestResults/
+*.trx
+*.coverage
+coverage*/
+
+## Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Debug/Release output
+*.dll
+*.exe
+*.pdb
+
+## Generated files
+*.generated.cs
+
+## SQL Server files
+*.mdf
+*.ldf
+
+## User secrets
+secrets.json
+.env
+appsettings.*.local.json
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## JetBrains
+*.iml
+
+# Ensure EF migrations and code are tracked (do not ignore Migrations folder by default)
